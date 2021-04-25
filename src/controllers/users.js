@@ -1,16 +1,21 @@
-let users = [
-  {
-    id: "1",
-    fullName: "spiderman",
-    email: "spiderman@gmail.com",
-  },
-];
+const users = require("../../models");
+
+// let users = [
+//   {
+//     id: "1",
+//     fullName: "spiderman",
+//     email: "spiderman@gmail.com",
+//   },
+// ];
 
 exports.getUsers = async (req, res) => {
   try {
+    const dataUsers = await users.findAll();
     res.send({
       status: "Success",
-      users,
+      data: {
+        users: dataUsers,
+      },
     });
   } catch (error) {
     console.log(error);
@@ -21,11 +26,17 @@ exports.getUsers = async (req, res) => {
   }
 };
 
-exports.addUser = async (req, res) => {
+exports.createUser = async (req, res) => {
   try {
-    const data = req.body;
-    users = [...users, data];
-    res.send({ users });
+    const users = await users.create(req.body);
+    res.status(200).send({
+      status: "success",
+      data: {
+        users: {
+          email: users.email,
+        },
+      },
+    });
   } catch (error) {
     console.log(error);
     res.status(500).send({
